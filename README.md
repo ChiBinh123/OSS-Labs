@@ -58,3 +58,12 @@ Kết quả yêu cầu của phần mẫu: `TESTS=7 FAILED=0`. `check` chỉ ki�
 2. Chọn **Đăng ký tham dự**, gửi form trống: thấy lỗi họ tên/email.
 3. Nhập tên và email thử nghiệm hợp lệ, nhấn **Kiểm tra**: thấy `PREVIEW_OK`. Đây chỉ là xem trước, chưa lưu Session hoặc CSDL.
 4. Chọn **Danh sách sự kiện** để quay lại. Bộ lọc nâng cao là phần TODO, sinh viên cần tự hoàn thiện.
+
+
+## Giao diện Material 3 và khu thử riêng
+
+Sau `bash lab.sh run`, mở [sự kiện mẫu](http://127.0.0.1:8103/ui-demo.php) hoặc [thử vé/ghế](http://127.0.0.1:8103/ticket-preview.php?id=demo-open-source). Sáu sự kiện hư cấu và ảnh SVG cục bộ có giấy phép CC0. Không cần cài thêm thư viện hoặc build.
+
+Chi tiết sự kiện lab tại `/event.php?id=1` chỉ đọc; nút mở biểu mẫu vẫn dùng chức năng gốc. Lựa chọn demo chỉ ở bộ nhớ trang, tải lại sẽ xóa; chưa giữ ghế, tạo vé hoặc thanh toán. ID demo không đi vào Form/CSDL. TODO và các ca `extend` sinh viên vẫn giữ nguyên.
+
+Xem [hướng dẫn phần trình bày](Ma_nguon/README.md#giao-diện-material-3).

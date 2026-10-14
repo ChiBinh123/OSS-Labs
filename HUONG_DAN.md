@@ -170,26 +170,51 @@ require __DIR__ . '/../src/EventFilter.php';
 $events = require __DIR__ . '/../data/events.php';
 $query = field($_GET, 'q');
 $visible = filterEvents($events, $query);
+require_once __DIR__ . '/../templates/event-presentation.php';
 require __DIR__ . '/../templates/header.php';
 ?>
-<form method="get">
-    <label>Từ khóa
-        <input name="q" value="<?= e($query) ?>">
+<div class="page-heading page-heading--list page-search">
+<h1>Sự kiện</h1>
+<p>Tìm theo tên và xem thông tin sự kiện.</p>
+</div>
+<form class="search-form" method="get">
+    <label class="form-field" for="q">Từ khóa
+<input id="q" name="q" value="<?= e($query) ?>">
     </label>
     <button>Tìm</button>
 </form>
-<p>Kết quả: <?= count($visible) ?></p>
+<p class="result-count">Kết quả: <?= count($visible) ?></p>
+<section class="event-list" aria-label="Danh sách sự kiện">
 <?php foreach ($visible as $event): ?>
-    <article>
-        <strong><?= e($event['title']) ?></strong><br>
-        Loại: <?= e($event['category']) ?>.<br>
+    <article class="event-item event-card">
+<?php $content = uiContent((int)$event['id']); ?>
+<figure class="event-cover">
+<img src="<?= e(uiImage($content['image'])) ?>" alt="<?= e($content['alt']) ?>" width="960" height="540">
+<figcaption>Minh họa</figcaption>
+</figure>
+<div class="event-card-content">
+        <h2 class="event-title"><?= e($event['title']) ?></h2>
+<p class="event-date"><?= e(uiDate($content['start'])) ?></p>
+<p class="event-venue"><?= e($content['venue']) ?></p>
+<p><?= e($content['summary']) ?></p>
+<p class="event-meta">
+        Loại: <?= e($event['category']) ?>. 
         Còn <?= max(0, $event['capacity'] - $event['registered']) ?>
         chỗ (dữ liệu mẫu).
-    </article>
+    </p>
+<a class="text-button" href="/event.php?id=<?= (int)$event['id'] ?>">Xem chi tiết</a>
+</div>
+</article>
 <?php endforeach; ?>
+</section>
 <?php if (!$visible): ?>
-    <p>Không có kết quả.</p>
+    <p class="empty-state">Không có kết quả.<span>Thử tìm với một từ khóa khác.</span>
+</p>
 <?php endif; ?>
+<p class="content-note">Thời gian, địa điểm và ảnh bổ sung là nội dung hư cấu phục vụ học tập. Dữ liệu đăng ký vẫn lấy từ nguồn gốc của lab.</p>
+<section class="demo-entry"><h2>Sáu bối cảnh, một khu thử riêng</h2>
+<p>Hội thảo, workshop, âm nhạc, nghề nghiệp, online và triển lãm. Thử vé và ghế mà không đưa lựa chọn vào đăng ký của lab.</p>
+<a class="text-button" href="/ui-demo.php">Khám phá sự kiện mẫu</a></section>
 <?php require __DIR__ . '/../templates/footer.php'; ?>
 ```
 
@@ -241,34 +266,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 require __DIR__ . '/../templates/header.php';
 ?>
-<h2>Nhận dữ liệu form</h2>
-<form method="post">
-    <label>Sự kiện
-        <select name="event_id">
+<div class="page-heading">
+<h1>Đăng ký tham dự</h1>
+<p>Điền thông tin để kiểm tra và xem trước. Chưa lưu đăng ký.</p>
+</div>
+<form class="registration-form" method="post">
+    <label class="form-field" for="event_id">Sự kiện
+<select id="event_id" name="event_id">
             <?php foreach ($events as $event): ?>
                 <option value="<?= $event['id'] ?>">
                     <?= e($event['title']) ?>
                 </option>
             <?php endforeach; ?>
         </select>
-    </label><br>
-    <label>Họ tên
-        <input name="name" maxlength="120"
+    </label>
+    <label class="form-field" for="name">Họ tên
+<input id="name" name="name" maxlength="120"
                value="<?= e(field($_POST, 'name')) ?>">
-    </label><br>
-    <label>Email
-        <input name="email"
+    </label>
+    <label class="form-field" for="email">Email
+<input id="email" name="email"
                value="<?= e(field($_POST, 'email')) ?>">
-    </label><br>
+    </label>
     <button>Kiểm tra</button>
 </form>
 <?php if ($result !== null): ?>
     <?php if ($result['errors']): ?>
-        <p><?= e(implode(', ', $result['errors'])) ?></p>
+        <div class="error-summary" role="alert">
+<p class="error-messages"><?= e(implode(', ', $result['errors'])) ?></p>
+<p>Thông tin chưa hợp lệ. Kiểm tra lại các thông tin đã nhập rồi gửi lại.</p>
+</div>
     <?php else: ?>
-        <p>PREVIEW_OK: <?= e($result['data']['name']) ?>
+        <section class="preview" role="status">
+<h2>Xem trước thông tin</h2>
+<p class="status-message">PREVIEW_OK: <?= e($result['data']['name']) ?>
             — <?= e($result['data']['email']) ?></p>
         <p>Chỉ xem trước; chưa lưu Session hoặc CSDL.</p>
+</section>
     <?php endif; ?>
 <?php endif; ?>
 <?php require __DIR__ . '/../templates/footer.php'; ?>
