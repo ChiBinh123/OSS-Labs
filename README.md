@@ -63,3 +63,12 @@ Kết quả yêu cầu của phần mẫu: `TESTS=6 FAILED=0`. `check` chỉ ki�
 
 Khi so sánh Lab04 và Lab05 trên `127.0.0.1`, dùng hai phiên trình duyệt riêng: Cookie tùy chọn `view` dùng chung theo host, không tách theo cổng. Dữ liệu Session của từng lab dùng tên và thư mục riêng do `lab.sh` thiết lập.
 Hoàn tất phần mẫu cần thấy `SIMULATED_OK`; chưa lưu CSDL. Bản nháp có thời hạn 30 phút. Kiểm tra bổ sung `DraftGuard` vẫn là TODO; luồng mẫu chạy được không có nghĩa phần mở rộng đã hoàn thành.
+
+
+## Giao diện Material 3 và khu thử riêng
+
+Sau `bash lab.sh run`, mở [sự kiện mẫu](http://127.0.0.1:8104/ui-demo.php) hoặc [thử vé/ghế](http://127.0.0.1:8104/ticket-preview.php?id=demo-open-source). Sáu sự kiện hư cấu và ảnh SVG cục bộ có giấy phép CC0. Không cần cài thêm thư viện hoặc build.
+
+Chi tiết sự kiện lab tại `/event.php?id=1` chỉ đọc; nút mở biểu mẫu vẫn dùng chức năng gốc. Lựa chọn demo chỉ ở bộ nhớ trang, tải lại sẽ xóa; chưa giữ ghế, tạo vé hoặc thanh toán. ID demo không đi vào Form/CSDL. TODO và các ca `extend` sinh viên vẫn giữ nguyên.
+
+Xem [hướng dẫn phần trình bày](Ma_nguon/README.md#giao-diện-material-3).

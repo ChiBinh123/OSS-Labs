@@ -17,9 +17,13 @@ if (!isset($_SESSION['completed'])) {
 }
 require __DIR__.'/../templates/header.php';
 ?>
-<h2>Bước 3. Hoàn tất mô phỏng</h2>
-<p>
+<div class="page-heading">
+<h1>Bước 3. Hoàn tất mô phỏng</h1>
+</div>
+<section class="completion" role="status">
+<p class="status-message">
 <?= e($_SESSION['completed']) ?>
 </p>
 <p>Chưa ghi vào CSDL; đây không phải vé hoặc bằng chứng đăng ký thật.</p>
+</section>
 <?php require __DIR__.'/../templates/footer.php'; ?>

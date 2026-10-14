@@ -147,13 +147,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 require __DIR__.'/../templates/header.php';
 ?>
-<h2>Bước 1. Nhập thông tin</h2>
-<p>
-<?= e(implode(', ', $errors)) ?>
-</p>
-<form method="post">
+<div class="page-heading">
+<h1>Bước 1. Nhập thông tin</h1>
+<p>Điền thông tin để chuyển đến bước xem lại bản nháp.</p>
+</div>
+<div class="error-summary" role="alert">
+<p class="error-messages"><?= e(implode(', ', $errors)) ?></p>
+<p>Thông tin chưa hợp lệ. Kiểm tra lại các thông tin đã nhập rồi gửi lại.</p>
+</div>
+<form class="registration-form" method="post">
 <input type="hidden" name="csrf" value="<?= e($_SESSION['csrf']) ?>">
-<label>Sự kiện <select name="event_id">
+<label class="form-field" for="event_id">Sự kiện
+<select id="event_id" name="event_id">
 <?php foreach($events as $event): ?>
 <option value="<?= $event['id'] ?>" <?= (int)$data['event_id']===$event['id']?'selected':'' ?>>
 <?= e($event['title']) ?>
@@ -161,25 +166,27 @@ require __DIR__.'/../templates/header.php';
 <?php endforeach; ?>
 </select>
 </label>
-<br>
-<label>Họ tên <input name="name" value="<?= e($data['name']) ?>">
+<label class="form-field" for="name">Họ tên
+<input id="name" name="name" value="<?= e($data['name']) ?>">
 </label>
-<br>
-<label>Email <input name="email" value="<?= e($data['email']) ?>">
+<label class="form-field" for="email">Email
+<input id="email" name="email" value="<?= e($data['email']) ?>">
 </label>
-<br>
 <button>Tiếp tục</button>
 </form>
-<form method="post" action="/preferences.php">
+<form class="preferences-form" method="post" action="/preferences.php">
+<h2>Tùy chọn hiển thị</h2>
+<p>Form này chỉ lưu tùy chọn Cookie, không gửi đăng ký.</p>
 <input type="hidden" name="csrf" value="<?= e($_SESSION['csrf']) ?>">
-<label>Cách hiển thị <select name="view">
+<label class="form-field" for="view">Cách hiển thị
+<select id="view" name="view">
 <option value="compact">Gọn</option>
 <option value="full">Đầy đủ</option>
 </select>
 </label>
-<button>Lưu tùy chọn</button>
+<button class="button-secondary">Lưu tùy chọn</button>
 </form>
-<p>Tùy chọn Cookie: <?= e(field($_COOKIE, 'view')) ?>
+<p class="cookie-status">Tùy chọn Cookie: <?= e(field($_COOKIE, 'view')) ?>
 </p>
 <?php require __DIR__.'/../templates/footer.php'; ?>
 ```
@@ -210,10 +217,22 @@ if (draftExpired($_SESSION, time(), 1800)) {
 $data = $_SESSION['draft']['data'];
 require __DIR__.'/../templates/header.php';
 ?>
-<h2>Bước 2. Xác nhận</h2>
-<p>
-<?= e($data['name']) ?> — <?= e($data['email']) ?>
-</p>
+<div class="page-heading">
+<h1>Bước 2. Xác nhận</h1>
+<p>Đối chiếu thông tin trước khi xác nhận.</p>
+</div>
+<section class="confirmation" aria-label="Thông tin đăng ký">
+<dl class="summary-list">
+<div>
+<dt>Họ tên</dt>
+<dd><?= e($data['name']) ?></dd>
+</div>
+<div>
+<dt>Email</dt>
+<dd><?= e($data['email']) ?></dd>
+</div>
+</dl>
+<div class="confirmation-actions">
 <a href="/register.php">Sửa lại</a>
 <form method="post" action="/complete.php">
 <input type="hidden" name="csrf" value="<?= e($_SESSION['csrf']) ?>">
@@ -221,8 +240,10 @@ require __DIR__.'/../templates/header.php';
 </form>
 <form method="post" action="/cancel.php">
 <input type="hidden" name="csrf" value="<?= e($_SESSION['csrf']) ?>">
-<button>Hủy bản nháp</button>
+<button class="button-secondary button-cancel">Hủy bản nháp</button>
 </form>
+</div>
+</section>
 <?php require __DIR__.'/../templates/footer.php'; ?>
 ```
 
@@ -258,11 +279,15 @@ if (!isset($_SESSION['completed'])) {
 }
 require __DIR__.'/../templates/header.php';
 ?>
-<h2>Bước 3. Hoàn tất mô phỏng</h2>
-<p>
+<div class="page-heading">
+<h1>Bước 3. Hoàn tất mô phỏng</h1>
+</div>
+<section class="completion" role="status">
+<p class="status-message">
 <?= e($_SESSION['completed']) ?>
 </p>
 <p>Chưa ghi vào CSDL; đây không phải vé hoặc bằng chứng đăng ký thật.</p>
+</section>
 <?php require __DIR__.'/../templates/footer.php'; ?>
 ```
 
