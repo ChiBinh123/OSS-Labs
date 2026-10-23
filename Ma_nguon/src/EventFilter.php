@@ -1,17 +1,32 @@
 <?php
 declare(strict_types=1);
 
-function filterEvents(array $events, string $query, string $category = '',
-    bool $availableOnly = false): array
-{
-    // TODO phần mở rộng: thêm category và availableOnly bằng AND.
+function filterEvents(
+    array $events,
+    string $query,
+    string $category = '',
+    bool $availableOnly = false
+): array {
     $result = [];
+
     foreach ($events as $event) {
-        $matches = $query === ''
+        // Loc theo ten su kien
+        $matchQuery = $query === ''
             || stripos($event['title'], $query) !== false;
-        if ($matches) {
+
+        // Loc theo loai su kien
+        $matchCategory = $category === ''
+            || $event['category'] === $category;
+
+        // Loc theo so cho con lai
+        $matchAvailable = !$availableOnly
+            || $event['registered'] < $event['capacity'];
+
+        // Phai thoa man tat ca dieu kien
+        if ($matchQuery && $matchCategory && $matchAvailable) {
             $result[] = $event;
         }
     }
+
     return $result;
 }
