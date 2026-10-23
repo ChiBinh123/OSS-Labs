@@ -1,18 +1,53 @@
 #!/usr/bin/env bash
 set -uo pipefail
-# Khung duyệt tệp đã được GV cấp; điền các TODO về điều kiện, đếm và mã thoát.
-if [[ $# -ne 1 ]]; then echo 'Usage: scan-source.sh DIRECTORY' >&2; exit 2; fi
+
+if [[ $# -ne 1 ]]; then
+    echo "Usage: scan-source.sh DIRECTORY" >&2
+    exit 2
+fi
+
 root="$1"
-# TODO 1: thiếu/không đọc được thư mục hoặc thiếu php -> exit 2.
+
+# TODO 1: Kiem tra thu muc va tep PHP
+if [[ ! -d "$root" ]]; then
+    echo "ERROR: Directory not found" >&2
+    exit 2
+fi
+
+if ! find "$root" -type f -name '*.php' -print -quit | grep -q .; then
+    echo "ERROR: No PHP files found" >&2
+    exit 2
+fi
+
 list="$(mktemp)" || exit 2
-trap 'rm -f -- "$list"' EXIT
-if ! find "$root" -type f -name '*.php' -print0 > "$list"; then exit 2; fi
-total=0; passed=0; failed=0
+trap 'rm -f "$list"' EXIT
+
+if ! find "$root" -type f -name '*.php' -print0 > "$list"; then
+    exit 2
+fi
+
+total=0
+passed=0
+failed=0
+
+# TODO 2: Quet tat ca tep PHP
 while IFS= read -r -d '' file; do
-  # TODO 2: tăng total; php -l "$file"; tăng passed hoặc failed.
-  # Không dừng vòng lặp khi một tệp bị lỗi.
-  :
+    total=$((total + 1))
+
+    if php -l "$file" >/dev/null 2>&1; then
+        echo "PASS $file"
+        passed=$((passed + 1))
+    else
+        echo "FAIL $file"
+        failed=$((failed + 1))
+    fi
 done < "$list"
+
 printf 'TOTAL=%s PASS=%s FAIL=%s\n' "$total" "$passed" "$failed"
-# TODO 3: rỗng -> 2; có lỗi -> 1; tất cả đạt -> 0.
-exit 3
+
+# TODO 3: Tra ve ma thoat
+if [[ "$failed" -gt 0 ]]; then
+    exit 1
+else
+    exit 0
+fi
